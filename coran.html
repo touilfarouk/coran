@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سورة الغاشية - تلاوة القرآن الكريم</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lateef:wght@400;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/jquery.mb.miniAudioPlayer.css" title="style" media="screen"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.js"></script>
+    <script type="text/javascript" src="jquery.mb.miniAudioPlayer.js"></script>
+    <style>
+        :root {
+            --primary-dark: #0f4c3a;
+            --primary-med: #2d5a3d;
+            --primary-light: #1a472a;
+            --gold: #d4af37;
+            --gold-light: #f4e67c;
+            --bg-cream: #f5f5dc;
+            --text-dark: #1a1a1a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-med) 50%, var(--primary-light) 100%);
+            color: var(--bg-cream);
+            font-family: 'Lateef', 'Amiri', serif;
+            padding-bottom: 80px;
+        }
+
+        header {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--gold);
+            padding: 1rem;
+            text-align: center;
+        }
+
+        header h1 {
+            color: var(--gold);
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .surah-header {
+            background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 15px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1rem;
+            backdrop-filter: blur(5px);
+        }
+
+        .surah-title-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .surah-name {
+            font-size: 1.6rem;
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        .audio-player {
+            height: 36px !important;
+            width: 90px !important;
+        }
+
+        .playerTable {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .playerTable .toggle-btn {
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            font-size: 0.85rem;
+            text-decoration: none;
+            border: 1px solid #a85e10;
+            border-radius: 4px;
+            background: linear-gradient(180deg, #ffaa55 0%, #ff8040 50%, #cc7000 100%);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.4), 0 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .playerTable .toggle-btn:hover {
+            background: linear-gradient(180deg, #ffbb66 0%, #ff9050 50%, #dd8011 100%);
+        }
+
+        .playerTable .toggle-btn .fold-icon {
+            font-size: 0.85rem;
+            color: #ffffff;
+            transition: transform 0.3s ease;
+        }
+
+        .playerTable .toggle-btn.collapsed .fold-icon {
+            transform: rotate(-90deg);
+        }
+
+        .text-section {
+            background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .text-section.collapsed {
+            display: none;
+        }
+
+        .bismillah {
+            font-size: 1.4rem;
+            color: var(--gold);
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .arabic-text {
+            font-size: 1.8rem;
+            line-height: 2.2;
+            text-align: justify;
+            color: var(--bg-cream);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .verse {
+            display: inline;
+        }
+
+        .verse-number {
+            display: inline-block;
+            background: var(--gold);
+            color: var(--primary-dark);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin: 0 4px;
+            font-size: 0.95rem;
+            vertical-align: middle;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 0.8rem;
+            background: rgba(0, 0, 0, 0.5);
+            color: var(--bg-cream);
+            text-align: center;
+            border-top: 2px solid var(--gold);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 1.5rem;
+            }
+
+            .surah-name {
+                font-size: 1.3rem;
+            }
+
+            .bismillah {
+                font-size: 1.2rem;
+            }
+
+            .arabic-text {
+                font-size: 1.4rem;
+                line-height: 2;
+            }
+
+            .verse-number {
+                width: 26px;
+                height: 26px;
+                line-height: 26px;
+                font-size: 0.85rem;
+            }
+
+            .container {
+                padding: 0.75rem;
+            }
+
+            .text-section {
+                padding: 1rem;
+            }
+
+            .audio-player, .toggle-btn {
+                width: 70px !important;
+                height: 32px !important;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .arabic-text {
+                font-size: 1.2rem;
+            }
+
+            .verse-number {
+                width: 24px;
+                height: 24px;
+                line-height: 24px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>تلاوة القرآن الكريم</h1>
+    </header>
+
+    <div class="container">
+        <div class="surah-header">
+            <div class="surah-title-row">
+                <div class="surah-name">سورة الغاشية</div>
+                <div class="playerTable" id="mp_player" isplaying="false" style="display:inline-flex; vertical-align:middle; align-items:center;">
+                    <a class="audio-player {skin:'orange', autoPlay:false, width: 90, height: 36}" href="سورة الغاشية.mp3">▶</a>
+                    <a class="toggle-btn collapsed" id="toggleText" onclick="toggleText(); return false;">
+                        <span class="fold-icon">▼</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-section" id="textSection">
+            <div class="bismillah">بسم الله الرحمن الرحيم</div>
+            <div class="arabic-text" id="quranText"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>للاستخدام التعليمي - منصة تعلم القرآن الكريم</p>
+    </footer>
+
+    <script>
+        $(function(){
+            $(".audio-player").mb_miniPlayer();
+        });
+
+        const quranVerses = [
+            { text: "هَلۡ أَتَىٰكَ حَدِيثُ ٱلۡغَٰشِيَةِ", num: 1 },
+            { text: "وُجُوهٞ يَوۡمَئِذٍ خَٰشِعَةٌ", num: 2 },
+            { text: "عَامِلَةٞ نَّاصِبَةٞ", num: 3 },
+            { text: "تَصۡلَىٰ نَارًا حَامِيَةٗ", num: 4 },
+            { text: "تُسۡقَىٰ مِنۡ عَيۡنٍ ءَانِيَةٖ", num: 5 },
+            { text: "لَّيۡسَ لَهُمۡ طَعَامٌ إِلَّا مِن ضَرِيعٖ", num: 6 },
+            { text: "لَّا يُسۡمِنُ وَلَا يُغۡنِي مِن جُوعٖ", num: 7 },
+            { text: "وُجُوهٞ يَوۡمَئِذٖ نَّاعِمَةٞ", num: 8 },
+            { text: "لِّسَعۡيِهَا رَاضِيَةٞ", num: 9 },
+            { text: "فِي جَنَّةٍ عَالِيَةٖ", num: 10 },
+            { text: "لَّا تَسۡمَعُ فِيهَا لَٰغِيَةٗ", num: 11 },
+            { text: "فِيهَا عَيۡنٞ جَارِيَةٞ", num: 12 },
+            { text: "فِيهَا سُرُرٞ مَّرۡفُوعَةٞ", num: 13 },
+            { text: "وَأَكۡوَابٞ مَّوۡضُوعَةٞ", num: 14 },
+            { text: "وَنَمَارِقُ مَصۡفُوفَةٞ", num: 15 },
+            { text: "وَزَرَابِيُّ مَبۡثُوثَةٌ", num: 16 },
+            { text: "أَفَلَا يَنظُرُونَ إِلَى ٱلۡإِبِلِ كَيۡفَ خُلِقَتۡ", num: 17 },
+            { text: "وَإِلَى ٱلسَّمَآءِ كَيۡفَ رُفِعَتۡ", num: 18 },
+            { text: "وَإِلَى ٱلۡجِبَالِ كَيۡفَ نُصِبَتۡ", num: 19 },
+            { text: "و��إِلَى ٱلۡأَرۡضِ كَيۡفَ سُطِحَتۡ", num: 20 },
+            { text: "فَذَكِّرۡ إِنَّمَآ أَنتَ مُذَكِّرٞ", num: 21 },
+            { text: "لَّسۡتَ عَلَيۡهِم بِمُصَيۡطِرٍ", num: 22 },
+            { text: "إِلَّا مَن تَوَلَّىٰ وَكَفَرَ", num: 23 },
+            { text: "فَيُعَذِّبُهُ ٱللَّهُ ٱلۡعَذَابَ ٱلۡأَكۡبَرَ", num: 24 },
+            { text: "إِنَّ إِلَيۡنَآ إِيَابَهُمۡ", num: 25 },
+            { text: "ثُمَّ إِنَّ عَلَيۡنَا حِسَابَهُم", num: 26 }
+        ];
+
+        function renderVerses() {
+            const container = document.getElementById('quranText');
+            container.innerHTML = quranVerses.map(verse => 
+                `<div class="verse">${verse.text} <span class="verse-number">${verse.num}</span></div>`
+            ).join('');
+        }
+
+        let isTextVisible = true;
+
+        function toggleText() {
+            const textSection = document.getElementById('textSection');
+            const toggleBtn = document.getElementById('toggleText');
+            
+            isTextVisible = !isTextVisible;
+            
+            if (isTextVisible) {
+                textSection.classList.remove('collapsed');
+                toggleBtn.classList.remove('collapsed');
+            } else {
+                textSection.classList.add('collapsed');
+                toggleBtn.classList.add('collapsed');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            renderVerses();
+        });
+    </script>
+</body>
+</html>
