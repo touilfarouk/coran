@@ -198,7 +198,7 @@ a.audio{
 
 .mbMiniPlayer .playerTable span.map_title{
   position:relative;
-  color:#333;
+  color:#000000 !important;
   font:10px/12px "DroidSansMonoRegular", sans-serif !important;
   text-shadow: none !important;
   letter-spacing:0 !important;
@@ -208,9 +208,19 @@ a.audio{
   background:transparent !important;
   text-align:left !important;
   cursor:default !important;
-  text-overflow: ellipsis;
+  white-space: nowrap;
   overflow: hidden;
   box-sizing: border-box;
+  display: inline-block;
+}
+
+.mbMiniPlayer .playerTable span.map_title:hover{
+  animation: scroll-text 5s linear infinite;
+}
+
+@keyframes scroll-text {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
 }
 
 .mbMiniPlayer .map_info{
@@ -257,7 +267,8 @@ a.audio{
   overflow:hidden;
   white-space:nowrap;
   cursor:default !important;
-  text-shadow: 1px -1px 1px rgba(0,0,0,.6)!important;
+  color: #000000 !important;
+  text-shadow: none !important;
 }
 
 .mbMiniPlayer .playerTable span.map_play{

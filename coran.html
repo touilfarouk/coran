@@ -241,21 +241,40 @@
     </header>
 
     <div class="container">
+        <!-- سورة الغاشية -->
         <div class="surah-header">
             <div class="surah-title-row">
                 <div class="surah-name">سورة الغاشية</div>
-                <div class="playerTable" id="mp_player" isplaying="false" style="display:inline-flex; vertical-align:middle; align-items:center;">
-                    <a class="audio-player {skin:'orange', autoPlay:false, width: 90, height: 36}" href="سورة الغاشية.mp3">▶</a>
-                    <a class="toggle-btn collapsed" id="toggleText" onclick="toggleText(); return false;">
+                <div class="playerTable" id="mp_player_ghashiya" isplaying="false" style="display:inline-flex; vertical-align:middle; align-items:center;">
+                    <a class="audio-player {skin:'orange', autoPlay:false, width: 90, height: 36}" href="سورة الغاشية.mp3">▶ سورة الغاشية</a>
+                    <a class="toggle-btn collapsed" id="toggleGhashiya" onclick="toggleText('Ghashiya'); return false;">
                         <span class="fold-icon">▼</span>
                     </a>
                 </div>
             </div>
         </div>
 
-        <div class="text-section" id="textSection">
+        <div class="text-section" id="textGhashiya">
             <div class="bismillah">بسم الله الرحمن الرحيم</div>
-            <div class="arabic-text" id="quranText"></div>
+            <div class="arabic-text" id="quranTextGhashiya"></div>
+        </div>
+
+        <!-- سورة الأعلى -->
+        <div class="surah-header">
+            <div class="surah-title-row">
+                <div class="surah-name">سورة الأعلى</div>
+                <div class="playerTable" id="mp_player_aala" isplaying="false" style="display:inline-flex; vertical-align:middle; align-items:center;">
+                    <a class="audio-player {skin:'orange', autoPlay:false, width: 90, height: 36}" href="سورة الأعلى.mp3">▶ سورة الأعلى</a>
+                    <a class="toggle-btn collapsed" id="toggleAala" onclick="toggleText('Aala'); return false;">
+                        <span class="fold-icon">▼</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-section" id="textAala">
+            <div class="bismillah">بسم الله الرحمن الرحيم</div>
+            <div class="arabic-text" id="quranTextAala"></div>
         </div>
     </div>
 
@@ -268,51 +287,77 @@
             $(".audio-player").mb_miniPlayer();
         });
 
-        const quranVerses = [
-            { text: "هَلۡ أَتَىٰكَ حَدِيثُ ٱلۡغَٰشِيَةِ", num: 1 },
-            { text: "وُجُوهٞ يَوۡمَئِذٍ خَٰشِعَةٌ", num: 2 },
-            { text: "عَامِلَةٞ نَّاصِبَةٞ", num: 3 },
-            { text: "تَصۡلَىٰ نَارًا حَامِيَةٗ", num: 4 },
-            { text: "تُسۡقَىٰ مِنۡ عَيۡنٍ ءَانِيَةٖ", num: 5 },
-            { text: "لَّيۡسَ لَهُمۡ طَعَامٌ إِلَّا مِن ضَرِيعٖ", num: 6 },
-            { text: "لَّا يُسۡمِنُ وَلَا يُغۡنِي مِن جُوعٖ", num: 7 },
-            { text: "وُجُوهٞ يَوۡمَئِذٖ نَّاعِمَةٞ", num: 8 },
-            { text: "لِّسَعۡيِهَا رَاضِيَةٞ", num: 9 },
-            { text: "فِي جَنَّةٍ عَالِيَةٖ", num: 10 },
-            { text: "لَّا تَسۡمَعُ فِيهَا لَٰغِيَةٗ", num: 11 },
-            { text: "فِيهَا عَيۡنٞ جَارِيَةٞ", num: 12 },
-            { text: "فِيهَا سُرُرٞ مَّرۡفُوعَةٞ", num: 13 },
-            { text: "وَأَكۡوَابٞ مَّوۡضُوعَةٞ", num: 14 },
-            { text: "وَنَمَارِقُ مَصۡفُوفَةٞ", num: 15 },
-            { text: "وَزَرَابِيُّ مَبۡثُوثَةٌ", num: 16 },
-            { text: "أَفَلَا يَنظُرُونَ إِلَى ٱلۡإِبِلِ كَيۡفَ خُلِقَتۡ", num: 17 },
-            { text: "وَإِلَى ٱلسَّمَآءِ كَيۡفَ رُفِعَتۡ", num: 18 },
-            { text: "وَإِلَى ٱلۡجِبَالِ كَيۡفَ نُصِبَتۡ", num: 19 },
-            { text: "و��إِلَى ٱلۡأَرۡضِ كَيۡفَ سُطِحَتۡ", num: 20 },
-            { text: "فَذَكِّرۡ إِنَّمَآ أَنتَ مُذَكِّرٞ", num: 21 },
-            { text: "لَّسۡتَ عَلَيۡهِم بِمُصَيۡطِرٍ", num: 22 },
-            { text: "إِلَّا مَن تَوَلَّىٰ وَكَفَرَ", num: 23 },
-            { text: "فَيُعَذِّبُهُ ٱللَّهُ ٱلۡعَذَابَ ٱلۡأَكۡبَرَ", num: 24 },
-            { text: "إِنَّ إِلَيۡنَآ إِيَابَهُمۡ", num: 25 },
-            { text: "ثُمَّ إِنَّ عَلَيۡنَا حِسَابَهُم", num: 26 }
-        ];
+        const surahs = {
+            Ghashiya: [
+                { text: "هَلۡ أَتَىٰكَ حَدِيثُ ٱلۡغَٰشِيَةِ", num: 1 },
+                { text: "وُجُوهٞ يَوۡمَئِذٍ خَٰشِعَةٌ", num: 2 },
+                { text: "عَامِلَةٞ نَّاصِبَةٞ", num: 3 },
+                { text: "تَصۡلَىٰ نَارًا حَامِيَةٗ", num: 4 },
+                { text: "تُسۡقَىٰ مِنۡ عَيۡنٍ ءَانِيَةٖ", num: 5 },
+                { text: "لَّيۡسَ لَهُمۡ طَعَامٌ إِلَّا مِن ضَرِيعٖ", num: 6 },
+                { text: "لَّا يُسۡمِنُ وَلَا يُغۡنِي مِن جُوعٖ", num: 7 },
+                { text: "وُجُوهٞ يَوۡمَئِذٖ نَّاعِمَةٞ", num: 8 },
+                { text: "لِّسَعۡيِهَا رَاضِيَةٞ", num: 9 },
+                { text: "فِي جَنَّةٍ عَالِيَةٖ", num: 10 },
+                { text: "لَّا تَسۡمَعُ فِيهَا لَٰغِيَةٗ", num: 11 },
+                { text: "فِيهَا عَيۡنٞ جَارِيَةٞ", num: 12 },
+                { text: "فِيهَا سُرُرٞ مَّرۡفُوعَةٞ", num: 13 },
+                { text: "وَأَكۡوَابٞ مَّوۡضُوعَةٞ", num: 14 },
+                { text: "وَنَمَارِقُ مَصۡفُوفَةٞ", num: 15 },
+                { text: "وَزَرَابِيُّ مَبۡثُوثَةٌ", num: 16 },
+                { text: "أَفَلَا يَنظُرُونَ إِلَى ٱلۡإِبِلِ كَيۡفَ خُلِقَتۡ", num: 17 },
+                { text: "وَإِلَى ٱلسَّمَآءِ كَيۡفَ رُفِعَتۡ", num: 18 },
+                { text: "وَإِلَى ٱلۡجِبَالِ كَيۡفَ نُصِبَتۡ", num: 19 },
+                { text: "وَإِلَى ٱلۡأَرۡضِ كَيۡفَ سُطِحَتۡ", num: 20 },
+                { text: "فَذَكِّرۡ إِنَّمَآ أَنتَ مُذَكِّرٞ", num: 21 },
+                { text: "لَّسۡتَ عَلَيۡهِم بِمُصَيۡطِرٍ", num: 22 },
+                { text: "إِلَّا مَن تَوَلَّىٰ وَكَفَرَ", num: 23 },
+                { text: "فَيُعَذِّبُهُ ٱللَّهُ ٱلۡعَذَابَ ٱلۡأَكۡبَرَ", num: 24 },
+                { text: "إِنَّ إِلَيۡنَآ إِيَابَهُمۡ", num: 25 },
+                { text: "ثُمَّ إِنَّ عَلَيۡنَا حِسَابَهُم", num: 26 }
+            ],
+            Aala: [
+                { text: "سَبِّحِ ٱسۡمَ رَبِّكَ ٱلۡأَعۡلَىٰ", num: 1 },
+                { text: "ٱلَّذِي خَلَقَ فَسَوَّىٰ", num: 2 },
+                { text: "وَٱلَّذِي قَدَّرَ فَهَدَىٰ", num: 3 },
+                { text: "وَٱلَّذِيٓ أَخۡرَجَ ٱلۡمَرۡعَىٰ", num: 4 },
+                { text: "فَجَعَلَهُ غُثَآءً أَحۡوَىٰ", num: 5 },
+                { text: "سَنُقۡرِئُكَ فَلَا تَنسَىٰ", num: 6 },
+                { text: "إِلَّا مَا شَآءَ ٱللَّهُۚ إِنَّهُۥ يَعۡلَمُ ٱلۡجَهۡرَ وَمَا يَخۡفَىٰ", num: 7 },
+                { text: "وَنُيَسِّرُكَ لِلۡيُسۡرَىٰ", num: 8 },
+                { text: "فَذَكِّرۡ إِن نَّفَعَتِ ٱلذِّكۡرَىٰ", num: 9 },
+                { text: "سَيَذَّكَّرُ مَن يَخۡشَىٰ", num: 10 },
+                { text: "وَيَتَجَنَّبُهَا ٱلۡأَشۡقَى", num: 11 },
+                { text: "ٱلَّذِي يَصۡلَى ٱلنَّارَ ٱلۡكُبۡرَىٰ", num: 12 },
+                { text: "ثُمَّ لَا يَمُوتُ فِيهَا وَلَا يَحۡيَىٰ", num: 13 },
+                { text: "قَدۡ أَفۡلَحَ مَن تَزَكَّىٰ", num: 14 },
+                { text: "وَذَكَرَ ٱسۡمَ رَبِّهِۦ فَصَلَّىٰ", num: 15 },
+                { text: "بَلۡ تُؤۡثِرُونَ ٱلۡحَيَوٰةَ ٱلدُّنۡيَا", num: 16 },
+                { text: "وَٱلۡأٓخِرَةُ خَيۡرٞ وَأَبۡقَىٰ", num: 17 },
+                { text: "إِنَّ هَٰذَا لَفِي ٱلۡصُّحُفِ ٱلۡأُولَىٰ", num: 18 },
+                { text: "صُحُفِ إِبۡرَٰهِيمَ وَمُوسَىٰ", num: 19 }
+            ]
+        };
 
-        function renderVerses() {
-            const container = document.getElementById('quranText');
-            container.innerHTML = quranVerses.map(verse => 
+        const visibilityState = {
+            Ghashiya: true,
+            Aala: true
+        };
+
+        function renderVerses(surahId, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = surahs[surahId].map(verse => 
                 `<div class="verse">${verse.text} <span class="verse-number">${verse.num}</span></div>`
             ).join('');
         }
 
-        let isTextVisible = true;
-
-        function toggleText() {
-            const textSection = document.getElementById('textSection');
-            const toggleBtn = document.getElementById('toggleText');
+        function toggleText(surahId) {
+            const textSection = document.getElementById('text' + surahId);
+            const toggleBtn = document.getElementById('toggle' + surahId);
             
-            isTextVisible = !isTextVisible;
+            visibilityState[surahId] = !visibilityState[surahId];
             
-            if (isTextVisible) {
+            if (visibilityState[surahId]) {
                 textSection.classList.remove('collapsed');
                 toggleBtn.classList.remove('collapsed');
             } else {
@@ -322,7 +367,8 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            renderVerses();
+            renderVerses('Ghashiya', 'quranTextGhashiya');
+            renderVerses('Aala', 'quranTextAala');
         });
     </script>
 </body>
