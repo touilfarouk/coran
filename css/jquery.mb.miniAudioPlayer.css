@@ -223,6 +223,58 @@ a.audio{
   100% { transform: translateX(-100%); }
 }
 
+.mbMiniPlayer .map_speed,
+.mbMiniPlayer .map_repeat,
+.mbMiniPlayer .map_favorite,
+.mbMiniPlayer .map_spectrum,
+.mbMiniPlayer .map_autoNext,
+.mbMiniPlayer .map_downloadCount{
+  cursor: pointer !important;
+  font-size: 14px !important;
+  display: inline-block;
+}
+
+.mbMiniPlayer .map_speed{
+  font-family: "DroidSansMonoRegular", sans-serif !important;
+  font-size: 10px !important;
+  min-width: 24px;
+  text-align: center;
+}
+
+.mbMiniPlayer .map_repeat.active,
+.mbMiniPlayer .map_autoNext.active{
+  color: #4CAF50 !important;
+}
+
+.mbMiniPlayer .map_favorite.active{
+  color: #E91E63 !important;
+}
+
+.mbMiniPlayer .map_downloadCount{
+  font-family: "DroidSansMonoRegular", sans-serif !important;
+  font-size: 10px !important;
+  color: #888 !important;
+}
+
+.mbMiniPlayer .map_spectrum{
+  display: none;
+}
+
+.mbMiniPlayer .map_fold{
+  cursor: pointer !important;
+  font-size: 14px !important;
+}
+
+.mbMiniPlayer .spectrumBox,
+.mbMiniPlayer .autoNextBox,
+.mbMiniPlayer .downloadCountBox,
+.mbMiniPlayer .favoriteBox,
+.mbMiniPlayer .repeatBox,
+.mbMiniPlayer .speedBox,
+.mbMiniPlayer .foldBox{
+  display: none;
+}
+
 .mbMiniPlayer .map_info{
   display: none;
   background: rgb(48, 48, 48);

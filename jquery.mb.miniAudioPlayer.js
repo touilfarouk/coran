@@ -32,47 +32,67 @@
 		isMobile : false,
 
 		icon: {
-			play      : "P",
-			pause     : "p",
-			stop      : "S",
-			rewind    : "R",
-			volume    : "Vm",
-			volumeMute: "Vm"
+			play         : "P",
+			pause        : "p",
+			stop         : "S",
+			rewind       : "R",
+			volume      : "Vm",
+			volumeMute  : "Vm",
+			speed       : "Sp",
+			repeat      : "Rp",
+			repeatOn   : "Ro",
+			favorite   : "F",
+			favoriteOn: "Fr",
+			spectrum   : "V",
+			autoNext   : "N",
+			fold       : "▼",
+			unfold     : "▲"
 		},
 
 		defaults: {
-      ogg                  : null,
-      m4a                  : null,
-      width                : 150,
-      skin                 : "black", // available: black, blue, orange, red, gray or use the skinMaker tool to create your.
-      volume               : .5,
-      autoplay             : false,
-      animate              : true,
-      id3                  : false,
-      playAlone            : true,
-      loop                 : false,
-      inLine               : false,
-      volumeLevels         : 12,
-      allowMute            : true,
-      showControls         : true,
-      showVolumeLevel      : true,
-      showTime             : true,
-      showRew              : true,
-      addShadow            : false,
-      addGradientOverlay   : false,
-      gaTrack              : true,
-      downloadable         : false,
-      allowDownloadOnMobile: false,
-      downloadablesecurity : false,
-      downloadPage         : null,
-      swfPath              : "swf/",
-      pauseOnWindowBlur    : false,
-      onReady              : function (player, $controlsBox) {},
-      onPlay               : function (player) {},
-      onEnd                : function (player) {},
-      onPause              : function (player) {},
-      onMute               : function (player) {},
-      onDownload           : function (player) {}
+       ogg                  : null,
+       m4a                  : null,
+       width                : 150,
+       skin                 : "black", // available: black, blue, orange, red, gray or use the skinMaker tool to create your.
+       volume               : .5,
+       autoplay             : false,
+       animate              : true,
+       id3                  : false,
+       playAlone            : true,
+       loop                 : false,
+       inLine               : false,
+       volumeLevels         : 12,
+       allowMute            : true,
+       showControls         : true,
+       showVolumeLevel      : true,
+       showTime             : true,
+       showRew              : true,
+       addShadow            : false,
+       addGradientOverlay   : false,
+       gaTrack              : true,
+       downloadable         : false,
+       allowDownloadOnMobile: false,
+       downloadablesecurity : false,
+       downloadPage         : null,
+       swfPath              : "swf/",
+       pauseOnWindowBlur    : false,
+       // Quran player extensions
+       showSpeedControl     : true,
+       showRepeatControl    : true,
+       showFavorite         : true,
+       showSpectrum         : false,
+       showDownloadCount    : false,
+       showAutoNext         : true,
+       autoPlayNext         : false,
+       playbackSpeed        : 1,
+       progressMemory       : true,
+       textSection          : null,
+       onReady              : function (player, $controlsBox) {},
+       onPlay               : function (player) {},
+       onEnd                : function (player) {},
+       onPause              : function (player) {},
+       onMute               : function (player) {},
+       onDownload           : function (player) {}
 		},
 
 		getID3: function (player) {
@@ -168,7 +188,7 @@
 				if (master.player.opt.addGradientOverlay)
 					$controlsBox.addClass("gradientOverlay");
 
-				var $layout = jQuery("<div class='playerTable'><div></div><div></div><div></div><div></div><div></div><div></div></div>");
+				var $layout = jQuery("<div class='playerTable'><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>");
 
 				if (!jQuery("#JPLContainer").length) {
 					var JPLContainer = jQuery("<div/>").attr({id: "JPLContainer"});
@@ -262,6 +282,13 @@
 						if (typeof ga != "undefined" && eval(master.player.opt.gaTrack))
 							ga('send', 'event', 'Audio', 'map_Download', fileName + " - " + self.location.href);
 
+						if (master.player.opt.showDownloadCount) {
+							var downloadCounts = JSON.parse(localStorage.getItem("coranDownloadCounts") || "{}");
+							downloadCounts[fileUrl] = (downloadCounts[fileUrl] || 0) + 1;
+							localStorage.setItem("coranDownloadCounts", JSON.stringify(downloadCounts));
+							$downloadCountBox.html(downloadCounts[fileUrl]).show();
+						}
+
 						if (typeof master.player.opt.onDownload == "function")
 							master.player.opt.onDownload(master.player);
 					});
@@ -284,6 +311,13 @@
 				var $playBox = jQuery("<span/>").addClass("map_play").html(jQuery.mbMiniPlayer.icon.play);
 				var $rewBox = jQuery("<span/>").addClass("map_rew").html(jQuery.mbMiniPlayer.icon.rewind).hide();
 				var $timeBox = jQuery("<span/>").addClass("map_time").html("").hide();
+				var $speedBox = jQuery("<span/>").addClass("map_speed").html(jQuery.mbMiniPlayer.icon.speed).hide();
+				var $repeatBox = jQuery("<span/>").addClass("map_repeat").html(jQuery.mbMiniPlayer.icon.repeat).hide();
+				var $favoriteBox = jQuery("<span/>").addClass("map_favorite").html(jQuery.mbMiniPlayer.icon.favorite).hide();
+				var $spectrumBox = jQuery("<span/>").addClass("map_spectrum").html(jQuery.mbMiniPlayer.icon.spectrum).hide();
+				var $autoNextBox = jQuery("<span/>").addClass("map_autoNext").html(jQuery.mbMiniPlayer.icon.autoNext).hide();
+				var $downloadCountBox = jQuery("<span/>").addClass("map_downloadCount").html("0").hide();
+				var $foldBox = jQuery("<span/>").addClass("map_fold").html(jQuery.mbMiniPlayer.icon.fold).hide();
 
 				var $controls = jQuery("<div/>").addClass("map_controls");
 				var titleText = master.player.title;
@@ -302,6 +336,12 @@
 				$parts.eq(3).addClass("timeBox").append($timeBox).hide();
 				$parts.eq(4).addClass("rewBox").append($rewBox).hide();
 				$parts.eq(5).append($playBox);
+				$parts.eq(6).addClass("speedBox").append($speedBox).hide();
+				$parts.eq(7).addClass("repeatBox").append($repeatBox).hide();
+				$parts.eq(8).addClass("favoriteBox").append($favoriteBox).hide();
+				$parts.eq(9).addClass("spectrumBox").append($spectrumBox).hide();
+				$parts.eq(10).addClass("autoNextBox").append($autoNextBox).hide();
+				$parts.eq(11).addClass("foldBox").append($foldBox).hide();
 
 				master.player.opt.media = {};
 				master.player.opt.supplied = [];
@@ -330,7 +370,7 @@
 						smoothPlayBar      : true,
 						volume             : master.player.opt.volume,
 						swfPath            : master.player.opt.swfPath,
-						solution           : 'html, flash',
+solution           : 'html',
 						preload            : 'none',
 						cssSelectorAncestor: "#" + playerID, // Remove the ancestor css selector clause
 						cssSelector        : {
@@ -346,8 +386,9 @@
 
 					ready              : function () {
 						var el = jQuery(this);
+						master.player.el = el;
 
-						el.jPlayer("setMedia", master.player.opt.media);
+						$player.jPlayer("setMedia", master.player.opt.media);
 
 						if (master.player.opt.mp3)
 							jQuery.mbMiniPlayer.getID3(master.player);
@@ -417,6 +458,40 @@
 
 								}
 
+								if (master.player.opt.showSpeedControl) {
+									$speedBox.parent("div").show();
+									$speedBox.show().html(master.player.opt.playbackSpeed + "x");
+									widthToRemove += 30;
+								}
+
+								if (master.player.opt.showRepeatControl) {
+									$repeatBox.parent("div").show();
+									$repeatBox.show();
+									widthToRemove += 25;
+								}
+
+								if (master.player.opt.showFavorite) {
+									$favoriteBox.parent("div").show();
+									$favoriteBox.show();
+									widthToRemove += 25;
+								}
+
+								if (master.player.opt.showAutoNext) {
+									$autoNextBox.parent("div").show();
+									$autoNextBox.show();
+									widthToRemove += 25;
+								}
+
+								if (master.player.opt.showDownloadCount) {
+									$downloadCountBox.parent("div").show();
+									$downloadCountBox.show();
+									widthToRemove += 30;
+								}
+
+								$foldBox.parent("div").show();
+								$foldBox.show();
+								widthToRemove += 25;
+
 								if (master.player.opt.showControls) {
 									$controls.parent("div").show();
 
@@ -449,6 +524,26 @@
 										jQuery(this).parent("div").css({display: "none"})
 									});
 								}
+								if (master.player.opt.showSpeedControl) {
+									$speedBox.parent("div").animate({width: 1}, speed / 2, function () {
+										jQuery(this).css({display: "none"});
+									});
+								}
+								if (master.player.opt.showRepeatControl) {
+									$repeatBox.parent("div").animate({width: 1}, speed / 2, function () {
+										jQuery(this).css({display: "none"});
+									});
+								}
+								if (master.player.opt.showFavorite) {
+									$favoriteBox.parent("div").animate({width: 1}, speed / 2, function () {
+										jQuery(this).css({display: "none"});
+									});
+								}
+								if (master.player.opt.showAutoNext) {
+									$autoNextBox.parent("div").animate({width: 1}, speed / 2, function () {
+										jQuery(this).css({display: "none"});
+									});
+								}
 							}
 						}
 
@@ -471,9 +566,10 @@
 								}
 
 								jQuery(this).html(jQuery.mbMiniPlayer.icon.pause);
+								$foldBox.html(jQuery.mbMiniPlayer.icon.unfold);
 
-								el.jPlayer("play");
 								$controlsBox.attr("isPlaying", "true");
+								$player.jPlayer("play");
 
 								//add track for Google Analytics
 								if (typeof _gaq != "undefined" && master.player.opt.gaTrack)
@@ -493,9 +589,10 @@
 								master.player.isOpen = false;
 
 								jQuery(this).html(jQuery.mbMiniPlayer.icon.play);
+								$foldBox.html(jQuery.mbMiniPlayer.icon.fold);
 
 								$controlsBox.attr("isPlaying", "false");
-								el.jPlayer("pause");
+								$player.jPlayer("pause");
 							}
 
 							e.stopPropagation();
@@ -524,12 +621,12 @@
 									if (jQuery(this).hasClass("mute")) {
 										jQuery(this).removeClass("mute");
 										jQuery(this).html(jQuery.mbMiniPlayer.icon.volume);
-										el.jPlayer("volume", master.player.opt.vol);
+										$player.jPlayer("volume", master.player.opt.vol);
 									} else {
 										jQuery(this).addClass("mute");
 										jQuery(this).html(jQuery.mbMiniPlayer.icon.volumeMute);
 										master.player.opt.vol = master.player.opt.volume;
-										el.jPlayer("volume", 0);
+										$player.jPlayer("volume", 0);
 
 										if (master.player.opt.onMute == "function")
 											master.player.opt.onMute(master.player);
@@ -547,9 +644,173 @@
 									}
 							);
 
-						$rewBox.on(jQuery.mbMiniPlayer.eventEnd, function () {
-							el.jPlayer("playHead", 0);
+						$rewBox.on(jQuery.mbMiniPlayer.eventEnd, function (e) {
+							e.stopPropagation();
+							$player.jPlayer("playHead", 0);
 						});
+
+						var speedOptions = [0.5, 0.75, 1, 1.25, 1.5, 2];
+						var currentSpeedIndex = 2;
+
+						$speedBox.on(jQuery.mbMiniPlayer.eventEnd, function (e) {
+							e.stopPropagation();
+							currentSpeedIndex = (currentSpeedIndex + 1) % speedOptions.length;
+							var newSpeed = speedOptions[currentSpeedIndex];
+							$player.jPlayer("option", " playbackRate", newSpeed);
+							master.player.opt.playbackSpeed = newSpeed;
+							$speedBox.html(newSpeed + "x");
+						});
+
+						$repeatBox.on(jQuery.mbMiniPlayer.eventEnd, function (e) {
+							e.stopPropagation();
+							master.player.opt.loop = !master.player.opt.loop;
+							if (master.player.opt.loop) {
+								$repeatBox.addClass("active");
+								$repeatBox.html(jQuery.mbMiniPlayer.icon.repeatOn);
+							} else {
+								$repeatBox.removeClass("active");
+								$repeatBox.html(jQuery.mbMiniPlayer.icon.repeat);
+							}
+						});
+
+						$favoriteBox.on(jQuery.mbMiniPlayer.eventEnd, function (e) {
+							e.stopPropagation();
+							var surahId = $master.attr("id") || master.player.title;
+							var favorites = JSON.parse(localStorage.getItem("coranFavorites") || "{}");
+							if (favorites[surahId]) {
+								delete favorites[surahId];
+								$favoriteBox.removeClass("active");
+								$favoriteBox.html(jQuery.mbMiniPlayer.icon.favorite);
+							} else {
+								favorites[surahId] = {
+									title: master.player.title,
+									url: master.player.fileUrl,
+									dateAdded: new Date().toISOString()
+								};
+								$favoriteBox.addClass("active");
+								$favoriteBox.html(jQuery.mbMiniPlayer.icon.favoriteOn);
+							}
+							localStorage.setItem("coranFavorites", JSON.stringify(favorites));
+						});
+
+						var surahId = $master.attr("id") || master.player.title;
+						var favorites = JSON.parse(localStorage.getItem("coranFavorites") || "{}");
+						if (favorites[surahId]) {
+							$favoriteBox.addClass("active");
+							$favoriteBox.html(jQuery.mbMiniPlayer.icon.favoriteOn);
+						}
+
+						$autoNextBox.on(jQuery.mbMiniPlayer.eventEnd, function (e) {
+							e.stopPropagation();
+							master.player.opt.autoPlayNext = !master.player.opt.autoPlayNext;
+							if (master.player.opt.autoPlayNext) {
+								$autoNextBox.addClass("active");
+							} else {
+								$autoNextBox.removeClass("active");
+							}
+						});
+
+						$spectrumBox.on(jQuery.mbMiniPlayer.eventEnd, function (e) {
+							e.stopPropagation();
+							if (master.player.opt.showSpectrum) {
+								$controlsBox.toggleClass("showSpectrum");
+							}
+						});
+
+						$foldBox.on(jQuery.mbMiniPlayer.eventEnd, function (e) {
+							e.stopPropagation();
+							var isOpen = master.player.isOpen;
+							var speed = 200;
+							if (isOpen) {
+								if (master.player.opt.textSection) {
+									jQuery(master.player.opt.textSection).slideUp();
+								}
+								$controls.animate({width: 1}, speed, function () {
+									jQuery(this).parent("div").css({display: "none"})
+								});
+								if (master.player.opt.showRew) {
+									$rewBox.animate({width: 1}, speed / 2, function () {
+										jQuery(this).parent("div").css({display: "none"})
+									});
+								}
+								if (master.player.opt.showTime) {
+									$timeBox.animate({width: 1}, speed / 2, function () {
+										jQuery(this).parent("div").css({display: "none"})
+									});
+								}
+								if (master.player.opt.showVolumeLevel) {
+									jQuery("a", $volumeLevel).hide();
+									$volumeLevel.animate({width: 1}, speed / 2, function () {
+										jQuery(this).parent("div").css({display: "none"})
+									});
+								}
+								if (master.player.opt.showSpeedControl) {
+									$speedBox.parent("div").animate({width: 1}, speed / 2, function () {
+										jQuery(this).css({display: "none"});
+									});
+								}
+								if (master.player.opt.showRepeatControl) {
+									$repeatBox.parent("div").animate({width: 1}, speed / 2, function () {
+										jQuery(this).css({display: "none"});
+									});
+								}
+								if (master.player.opt.showFavorite) {
+									$favoriteBox.parent("div").animate({width: 1}, speed / 2, function () {
+										jQuery(this).css({display: "none"});
+									});
+								}
+								if (master.player.opt.showAutoNext) {
+									$autoNextBox.parent("div").animate({width: 1}, speed / 2, function () {
+										jQuery(this).css({display: "none"});
+									});
+								}
+								master.player.isOpen = false;
+								$foldBox.html(jQuery.mbMiniPlayer.icon.fold);
+							} else {
+								if (master.player.opt.textSection) {
+									jQuery(master.player.opt.textSection).slideDown();
+								}
+								$controls.parent("div").show();
+								$controls.animate({width: $controls.outerWidth()}, speed);
+								if (master.player.opt.showRew) {
+									$rewBox.parent("div").show();
+									$rewBox.animate({width: 20}, speed / 2);
+								}
+								if (master.player.opt.showTime) {
+									$timeBox.parent("div").show();
+									$timeBox.animate({width: 34}, speed / 2);
+								}
+								if (master.player.opt.showVolumeLevel) {
+									$volumeLevel.parent("div").show();
+									$volumeLevel.animate({width: 40}, speed / 2);
+									jQuery("a", $volumeLevel).show();
+								}
+								if (master.player.opt.showSpeedControl) {
+									$speedBox.parent("div").show();
+									$speedBox.animate({width: 24}, speed / 2);
+								}
+								if (master.player.opt.showRepeatControl) {
+									$repeatBox.parent("div").show();
+									$repeatBox.animate({width: 20}, speed / 2);
+								}
+								if (master.player.opt.showFavorite) {
+									$favoriteBox.parent("div").show();
+									$favoriteBox.animate({width: 20}, speed / 2);
+								}
+								if (master.player.opt.showAutoNext) {
+									$autoNextBox.parent("div").show();
+									$autoNextBox.animate({width: 20}, speed / 2);
+								}
+								master.player.isOpen = true;
+								$foldBox.html(jQuery.mbMiniPlayer.icon.unfold);
+							}
+							e.preventDefault();
+						});
+
+						var downloadCounts = JSON.parse(localStorage.getItem("coranDownloadCounts") || "{}");
+						if (master.player.opt.showDownloadCount && downloadCounts[master.player.fileUrl]) {
+							$downloadCountBox.html(downloadCounts[master.player.fileUrl]).show();
+						}
 
 						if (!jQuery.mbBrowser.mobile)
 							$rewBox.hover(
@@ -576,8 +837,8 @@
 
 							jQuery(this).on(jQuery.mbMiniPlayer.eventEnd, function () {
 								var vol = (i + 1) * barVol;
-								el.jPlayer("volume", vol);
-								if (i == 0) el.jPlayer("volume", .1);
+								$player.jPlayer("volume", vol);
+								if (i == 0) $player.jPlayer("volume", .1);
 								$muteBox.removeClass("mute");
 							});
 						});
@@ -591,7 +852,7 @@
 					smoothPlayBar      : true,
 					volume             : master.player.opt.volume,
 					swfPath            : master.player.opt.swfPath,
-					solution           : 'html, flash',
+					solution           : 'html',
 //					solution           : player.opt.isIE && $.browser.version<11 ? 'flash' : 'html, flash',
 //					preload            : jQuery.isMobile ? 'none' : 'metadata',
 					preload            : 'none',
@@ -602,18 +863,36 @@
 						// The other defaults remain unchanged
 					}
 				})
-						.on(jQuery.jPlayer.event.play, function (e) {})
+						.on(jQuery.jPlayer.event.play, function (e) {
+							if (master.player.opt.progressMemory) {
+								var progressKey = "coranProgress_" + (master.player.title || master.player.fileUrl);
+								var savedProgress = localStorage.getItem(progressKey);
+								if (savedProgress) {
+									$player.jPlayer("option", " playbackRate", master.player.opt.playbackSpeed);
+									setTimeout(function() {
+										$player.jPlayer("playHead", (parseFloat(savedProgress) / master.player.duration) * 100);
+									}, 100);
+								}
+							}
+						})
 						.on(jQuery.jPlayer.event.loadedmetadata, function () {})
 						.on(jQuery.jPlayer.event.ended, function () {
 
 							if (typeof master.player.opt.onEnd === "function")
 								master.player.opt.onEnd(master.player);
 
-							if (master.player.opt.loop)
+							if (master.player.opt.loop) {
 								$player.jPlayer("play");
-
-							else
+							} else if (master.player.opt.autoPlayNext) {
+								var $nextAudio = $master.next("a.audio");
+								if ($nextAudio.length) {
+									$nextAudio.mb_miniPlayer_toggle();
+								} else {
+									$playBox.trigger(jQuery.mbMiniPlayer.eventEnd);
+								}
+							} else {
 								$playBox.trigger(jQuery.mbMiniPlayer.eventEnd);
+							}
 							if (typeof master.player.opt.onPause == "function") {
 								master.player.opt.onPause(player);
 							}
@@ -624,6 +903,11 @@
 							master.player.currentTime = e.jPlayer.status.currentTime;
 							master.player.seekPercent = e.jPlayer.status.seekPercent;
 							$timeBox.html(jQuery.jPlayer.convertTime(e.jPlayer.status.currentTime)).attr("title", jQuery.jPlayer.convertTime(e.jPlayer.status.duration));
+
+							if (master.player.opt.progressMemory) {
+								var progressKey = "coranProgress_" + (master.player.title || master.player.fileUrl);
+								localStorage.setItem(progressKey, e.jPlayer.status.currentTime);
+							}
 						})
 						.on(jQuery.jPlayer.event.volumechange, function (event) {
 							var bars = master.player.opt.volumeLevels;
